@@ -131,7 +131,7 @@ const PLAN_TIERS = [
       abordados: "~200/mês",
       reunioes: "~30",
       convertidos: "~8–12",
-      roiNote: "Com ~10 clientes novos/mês a R$ 800 de honorário médio, são R$ 8 mil em receita recorrente. O investimento se paga em 1–2 meses.",
+      roiNote: "Cada cliente novo gera honorário recorrente mensal. Com ~10 clientes convertidos por mês, o investimento na automação se paga rapidamente e o restante é lucro acumulado.",
     },
   },
   {
@@ -158,10 +158,66 @@ const PLAN_TIERS = [
       abordados: "~200/mês",
       reunioes: "~35",
       convertidos: "~10–15",
-      roiNote: "Além da captação, cada cliente de BPO gera ~R$ 2.500/mês adicional. Com 5 clientes de BPO = R$ 12.500/mês de receita nova. O site capta leads orgânicos 24h.",
+      roiNote: "O BPO gera uma segunda fonte de receita recorrente por cliente — além do honorário contábil. Quanto mais clientes de BPO, maior o faturamento sem aumentar equipe. O site ainda capta leads orgânicos 24h.",
     },
   },
 ];
+
+/* ─── BPO Flow steps with tooltips ─── */
+const BPO_STEPS = [
+  { icon: Receipt, t: "Documento recebido", d: "Email ou WhatsApp",
+    detail: "Cliente envia nota fiscal, boleto ou fatura por email ou WhatsApp. O sistema detecta automaticamente que é um documento financeiro e inicia o processamento." },
+  { icon: FileSearch, t: "Triagem automática", d: "IA filtra relevantes",
+    detail: "A IA analisa o conteúdo e descarta spam, propagandas e documentos irrelevantes. Só encaminha pro próximo passo o que realmente é documento financeiro." },
+  { icon: ScanLine, t: "Leitura inteligente", d: "OCR extrai os dados",
+    detail: "OCR com IA (Gemini Flash / GPT-4o Mini) lê o documento — mesmo PDF escaneado ou foto torta — e extrai: valor, data, fornecedor, CNPJ, descrição, vencimento." },
+  { icon: BadgeCheck, t: "Classificação contábil", d: "Categoriza na conta certa",
+    detail: "Com base nas regras do escritório e no histórico de lançamentos, a IA classifica automaticamente na conta contábil correta. Regras 100% personalizáveis." },
+  { icon: Landmark, t: "Lançamento", d: "Exporta pro sistema contábil",
+    detail: "O lançamento é exportado em formato compatível com o sistema contábil do escritório (planilha, CSV ou integração direta). Pode ser Domínio, Omie, ContaAzul ou qualquer outro." },
+];
+
+function FlowSteps() {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (openIdx === null) return;
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpenIdx(null);
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, [openIdx]);
+
+  return (
+    <div ref={ref} className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+      {BPO_STEPS.map((s, i) => (
+        <div key={s.t} className="relative group cursor-pointer" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
+          <div className="w-12 h-12 mx-auto rounded-xl bg-white border border-navy-100 flex items-center justify-center mb-3 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1 group-hover:border-navy-200">
+            <s.icon size={20} className="text-navy-500" strokeWidth={1.5} />
+          </div>
+          <p className="text-[12px] font-semibold text-navy-700">{s.t}</p>
+          <p className="text-[11px] text-navy-400 mt-0.5 flex items-center justify-center gap-1">
+            {s.d} <Info size={10} className="text-navy-300 group-hover:text-navy-500 transition-colors" />
+          </p>
+          {i < 4 && <ArrowRight size={14} className="absolute top-6 -right-3 text-navy-200 hidden md:block" />}
+
+          {/* Tooltip */}
+          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-[260px] z-30 transition-all duration-300 ${
+            openIdx === i ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
+          }`}>
+            <div className="bg-white rounded-xl shadow-xl shadow-navy-950/15 border border-navy-100 p-4 text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-navy-400 mb-2">Detalhes</p>
+              <p className="text-[12px] text-navy-600 leading-relaxed">{s.detail}</p>
+              <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-navy-100 rotate-45" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function PlanosSection({ refProp }: { refProp: React.RefObject<HTMLDivElement | null> }) {
   const [tier, setTier] = useState(1);
@@ -590,24 +646,7 @@ export default function Apresentacao() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-navy-400 mb-8 text-center">
               Fluxo de processamento
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-              {[
-                { icon: Receipt, t: "Documento recebido", d: "Email ou WhatsApp" },
-                { icon: FileSearch, t: "Triagem automática", d: "IA filtra relevantes" },
-                { icon: ScanLine, t: "Leitura inteligente", d: "OCR extrai os dados" },
-                { icon: BadgeCheck, t: "Classificação contábil", d: "Categoriza na conta certa" },
-                { icon: Landmark, t: "Lançamento", d: "Integra com o ERP" },
-              ].map((s, i) => (
-                <div key={s.t} className="relative group">
-                  <div className="w-12 h-12 mx-auto rounded-xl bg-white border border-navy-100 flex items-center justify-center mb-3 shadow-sm transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1 group-hover:border-navy-200">
-                    <s.icon size={20} className="text-navy-500" strokeWidth={1.5} />
-                  </div>
-                  <p className="text-[12px] font-semibold text-navy-700">{s.t}</p>
-                  <p className="text-[11px] text-navy-400 mt-0.5">{s.d}</p>
-                  {i < 4 && <ArrowRight size={14} className="absolute top-6 -right-3 text-navy-200 hidden md:block" />}
-                </div>
-              ))}
-            </div>
+            <FlowSteps />
           </div>
 
           {/* Features */}
