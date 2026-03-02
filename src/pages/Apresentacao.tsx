@@ -3,7 +3,7 @@ import {
   MessageCircle, Target, Landmark, Globe, ShieldCheck, BookOpen,
   Database, Filter, Zap, ScanLine, FileSearch, BadgeCheck, ArrowRight,
   Receipt, Check, Clock, TrendingUp, ChevronRight, Users, ArrowDown,
-  Menu, X, BarChart3,
+  Menu, X, BarChart3, Info,
 } from "lucide-react";
 
 /* ─── Intersection Observer hook ─── */
@@ -50,6 +50,46 @@ const Hr = () => (
 );
 
 
+/* ─── Floating tooltip for stats ─── */
+function StatCard({ val, lab, sub, explanation }: {
+  val: string; lab: string; sub: string; explanation: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative cursor-pointer group" onClick={() => setOpen(!open)}>
+      <p className="font-display text-[34px] font-medium text-white leading-none group-hover:text-emerald-300 transition-colors duration-300">
+        {val}
+      </p>
+      <p className="text-[12px] text-navy-300 mt-3 font-medium flex items-center justify-center gap-1.5">
+        {lab} <Info size={11} className="text-navy-500 group-hover:text-navy-300 transition-colors" />
+      </p>
+      <p className="text-[11px] text-navy-500 mt-1">{sub}</p>
+
+      {/* Tooltip */}
+      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-[280px] transition-all duration-300 z-30 ${
+        open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"
+      }`}>
+        <div className="bg-white rounded-xl shadow-xl shadow-navy-950/20 border border-navy-100 p-5 text-left">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-navy-400 mb-2">Como estimamos</p>
+          <p className="text-[13px] text-navy-700 leading-relaxed">{explanation}</p>
+          <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-navy-100 rotate-45" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Plans data ─── */
 const PLAN_TIERS = [
   {
@@ -62,6 +102,14 @@ const PLAN_TIERS = [
     ],
     metrics: { leads: "~30/mês", empresas: "—", economia: "~40h/mês", clientes: "Receptivos" },
     bar: [30, 0, 0],
+    funnel: {
+      base: "—",
+      filtrados: "—",
+      abordados: "~30",
+      reunioes: "~5",
+      convertidos: "~2",
+      roiNote: "Atende quem já procura o escritório. Ideal como primeiro passo.",
+    },
   },
   {
     id: 1, nome: "Profissional", sub: "Chatbot + Prospecção B2B",
@@ -77,6 +125,14 @@ const PLAN_TIERS = [
     ],
     metrics: { leads: "~200/mês", empresas: "~700 mil", economia: "~120h/mês", clientes: "Ativo + Receptivo" },
     bar: [30, 70, 0],
+    funnel: {
+      base: "~700 mil",
+      filtrados: "~15 mil",
+      abordados: "~200/mês",
+      reunioes: "~30",
+      convertidos: "~8–12",
+      roiNote: "Com ~10 clientes novos/mês a R$ 800 de honorário médio, são R$ 8 mil em receita recorrente. O investimento se paga em 1–2 meses.",
+    },
   },
   {
     id: 2, nome: "Premium", sub: "Prospecção + BPO Financeiro + Website",
@@ -96,6 +152,14 @@ const PLAN_TIERS = [
     ],
     metrics: { leads: "~200/mês", empresas: "~700 mil", economia: "~312h/mês", clientes: "Ativo + Receptivo + Web" },
     bar: [30, 70, 100],
+    funnel: {
+      base: "~700 mil",
+      filtrados: "~15 mil",
+      abordados: "~200/mês",
+      reunioes: "~35",
+      convertidos: "~10–15",
+      roiNote: "Além da captação, cada cliente de BPO gera ~R$ 2.500/mês adicional. Com 5 clientes de BPO = R$ 12.500/mês de receita nova. O site capta leads orgânicos 24h.",
+    },
   },
 ];
 
@@ -225,6 +289,39 @@ function PlanosSection({ refProp }: { refProp: React.RefObject<HTMLDivElement | 
                 </div>
               ))}
             </div>
+
+            {/* Conversion funnel */}
+            <div className="mt-8 pt-8 border-t border-navy-800/40">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-navy-500 mb-5">Funil de conversão estimado</p>
+              <div className="space-y-2.5">
+                {[
+                  { label: "Base total de empresas", value: plan.funnel.base },
+                  { label: "Perfil ideal (filtrados)", value: plan.funnel.filtrados },
+                  { label: "Abordados pelo chatbot", value: plan.funnel.abordados },
+                  { label: "Reuniões agendadas", value: plan.funnel.reunioes },
+                  { label: "Clientes convertidos", value: plan.funnel.convertidos, highlight: true },
+                ].map((f) => (
+                  <div key={f.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full ${f.highlight ? "bg-emerald-400" : "bg-navy-600"}`} />
+                      <span className="text-[12px] text-navy-400">{f.label}</span>
+                    </div>
+                    <span className={`text-[13px] font-semibold tabular-nums transition-all duration-300 ${
+                      f.highlight ? "text-emerald-400" : f.value === "—" ? "text-navy-600" : "text-white"
+                    }`}>
+                      {f.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* ROI note */}
+              <div className="mt-5 p-4 rounded-xl bg-emerald-500/[0.07] border border-emerald-500/10">
+                <p className="text-[12px] text-emerald-300/90 leading-relaxed">
+                  {plan.funnel.roiNote}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </W>
@@ -305,7 +402,7 @@ export default function Apresentacao() {
       <section className="pt-40 md:pt-48 pb-28">
         <W className="text-center hero-anim">
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-navy-300 mb-8">
-            Proposta Técnica
+            Proposta exclusiva para Fortes & Sartor
           </p>
           <h1 className="font-display text-[36px] md:text-[52px] font-medium leading-[1.12] tracking-tight text-navy-950 max-w-[700px] mx-auto">
             Automação inteligente para seu escritório contábil
@@ -330,18 +427,30 @@ export default function Apresentacao() {
       <section className="bg-navy-950 py-20">
         <W>
           <div ref={refNums} className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-8 text-center reveal-children">
-            {[
-              { val: "~700 mil", lab: "Empresas mapeáveis", sub: "Região Metropolitana de Curitiba" },
-              { val: "24/7", lab: "Atendimento automático", sub: "Chatbot IA no WhatsApp" },
-              { val: "0,8s", lab: "Tempo de resposta", sub: "Sem fila de espera" },
-              { val: "~312h", lab: "Economizadas por mês", sub: "Em trabalho manual repetitivo" },
-            ].map((n) => (
-              <div key={n.lab}>
-                <p className="font-display text-[34px] font-medium text-white leading-none">{n.val}</p>
-                <p className="text-[12px] text-navy-300 mt-3 font-medium">{n.lab}</p>
-                <p className="text-[11px] text-navy-500 mt-1">{n.sub}</p>
-              </div>
-            ))}
+            <StatCard
+              val="~700 mil"
+              lab="Empresas mapeáveis"
+              sub="Região Metropolitana de Curitiba"
+              explanation="Base de dados pública da Receita Federal (CNPJ). Curitiba possui ~450 mil empresas ativas. Somando os 29 municípios da RMC, o total ultrapassa 700 mil CNPJs. Download 100% gratuito via dados.gov.br."
+            />
+            <StatCard
+              val="24/7"
+              lab="Atendimento automático"
+              sub="Chatbot IA no WhatsApp"
+              explanation="O chatbot com IA opera ininterruptamente via WhatsApp Business API Oficial. Não depende de equipe online — responde, qualifica e agenda reuniões a qualquer hora, inclusive feriados e madrugadas."
+            />
+            <StatCard
+              val="0,8s"
+              lab="Tempo de resposta"
+              sub="Sem fila de espera"
+              explanation="Tempo médio de resposta de modelos de linguagem (GPT-4o Mini / Gemini Flash) com RAG otimizado. Inclui busca na base de conhecimento + geração da resposta. Na prática, o cliente nunca espera."
+            />
+            <StatCard
+              val="~312h"
+              lab="Economizadas por mês"
+              sub="Em trabalho manual repetitivo"
+              explanation="Estimativa baseada em: triagem de documentos (~80h), digitação e categorização (~100h), conciliação bancária (~60h), atendimento receptivo (~40h) e prospecção manual (~32h). Equivalente a ~2 funcionários em tempo integral."
+            />
           </div>
         </W>
       </section>
