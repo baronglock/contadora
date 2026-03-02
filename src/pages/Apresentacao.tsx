@@ -3,7 +3,7 @@ import {
   MessageCircle, Target, Landmark, Globe, ShieldCheck, BookOpen,
   Database, Filter, Zap, ScanLine, FileSearch, BadgeCheck, ArrowRight,
   Receipt, Check, Clock, TrendingUp, ChevronRight, Users, ArrowDown,
-  Menu, X,
+  Menu, X, BarChart3,
 } from "lucide-react";
 
 /* ─── Intersection Observer hook ─── */
@@ -50,6 +50,189 @@ const Hr = () => (
 );
 
 
+/* ─── Plans data ─── */
+const PLAN_TIERS = [
+  {
+    id: 0, nome: "Essencial", sub: "Chatbot IA",
+    features: [
+      "Chatbot IA no WhatsApp (24/7)",
+      "Base de conhecimento própria (RAG)",
+      "Qualificação automática de leads",
+      "Painel de conversas e histórico",
+    ],
+    metrics: { leads: "~30/mês", empresas: "—", economia: "~40h/mês", clientes: "Receptivos" },
+    bar: [30, 0, 0],
+  },
+  {
+    id: 1, nome: "Profissional", sub: "Chatbot + Prospecção B2B",
+    features: [
+      "Chatbot IA no WhatsApp (24/7)",
+      "Base de conhecimento própria (RAG)",
+      "Qualificação automática de leads",
+      "Painel de conversas e histórico",
+      "Acesso à base da Receita Federal (~700 mil empresas RMC)",
+      "Filtragem por CNAE, cidade, porte e situação cadastral",
+      "Pipeline de leads qualificados (CRM)",
+      "Disparo automático de mensagens personalizadas",
+    ],
+    metrics: { leads: "~200/mês", empresas: "~700 mil", economia: "~120h/mês", clientes: "Ativo + Receptivo" },
+    bar: [30, 70, 0],
+  },
+  {
+    id: 2, nome: "Premium", sub: "Prospecção + BPO Financeiro + Website",
+    features: [
+      "Chatbot IA no WhatsApp (24/7)",
+      "Base de conhecimento própria (RAG)",
+      "Qualificação automática de leads",
+      "Painel de conversas e histórico",
+      "Acesso à base da Receita Federal (~700 mil empresas RMC)",
+      "Filtragem por CNAE, cidade, porte e situação cadastral",
+      "Pipeline de leads qualificados (CRM)",
+      "Disparo automático de mensagens personalizadas",
+      "BPO Financeiro automatizado (OCR + categorização)",
+      "Conciliação bancária via Open Finance",
+      "Aprovação por alçada financeira (WhatsApp)",
+      "Website institucional profissional com chat integrado",
+    ],
+    metrics: { leads: "~200/mês", empresas: "~700 mil", economia: "~312h/mês", clientes: "Ativo + Receptivo + Web" },
+    bar: [30, 70, 100],
+  },
+];
+
+function PlanosSection({ refProp }: { refProp: React.RefObject<HTMLDivElement | null> }) {
+  const [tier, setTier] = useState(1);
+  const plan = PLAN_TIERS[tier];
+
+  return (
+    <section id="planos" className="scroll-mt-20 py-28 bg-navy-950">
+      <W>
+        <div className="text-center mb-14">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-navy-400 mb-4">
+            Níveis de implementação
+          </p>
+          <h2 className="font-display text-[28px] md:text-[32px] font-medium tracking-tight text-white">
+            O que cada nível entrega
+          </h2>
+          <p className="text-[15px] text-navy-400 mt-3 font-light">
+            Selecione o nível para ver os recursos e a projeção de resultado
+          </p>
+        </div>
+
+        {/* Tier selector */}
+        <div ref={refProp} className="flex justify-center gap-2 mb-12 reveal">
+          {PLAN_TIERS.map((p, i) => (
+            <button
+              key={p.id}
+              onClick={() => setTier(i)}
+              className={`px-5 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-300 ${
+                tier === i
+                  ? "bg-white text-navy-900 shadow-lg shadow-white/10"
+                  : "bg-navy-800/50 text-navy-400 hover:bg-navy-800 hover:text-navy-200"
+              }`}
+            >
+              {p.nome}
+            </button>
+          ))}
+        </div>
+
+        {/* Content: features + projection */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          {/* Left: feature list */}
+          <div className="bg-navy-900/50 border border-navy-800/60 rounded-2xl p-8">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-display text-[22px] font-medium text-white">{plan.nome}</h3>
+              <span className="text-[11px] text-navy-400 font-medium">{plan.features.length} recursos</span>
+            </div>
+            <p className="text-[13px] text-navy-400 mb-8">{plan.sub}</p>
+
+            <div className="space-y-3">
+              {plan.features.map((feat, i) => {
+                const isNew = tier > 0 && i >= PLAN_TIERS[tier - 1].features.length;
+                return (
+                  <div
+                    key={feat}
+                    className="flex items-start gap-3"
+                    style={{
+                      animation: isNew ? `hero-fade-up 0.4s cubic-bezier(0.16,1,0.3,1) ${(i - (PLAN_TIERS[tier - 1]?.features.length || 0)) * 60}ms both` : undefined,
+                    }}
+                  >
+                    <Check size={15} className={`shrink-0 mt-0.5 ${isNew ? "text-emerald-400" : "text-navy-500"}`} />
+                    <span className={`text-[13px] leading-relaxed ${isNew ? "text-white font-medium" : "text-navy-300"}`}>
+                      {feat}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {tier < 2 && (
+              <button
+                onClick={() => setTier(tier + 1)}
+                className="mt-8 text-[12px] text-navy-400 hover:text-white transition-colors duration-300 flex items-center gap-1.5"
+              >
+                Ver próximo nível <ChevronRight size={13} />
+              </button>
+            )}
+          </div>
+
+          {/* Right: projection */}
+          <div className="bg-navy-900/50 border border-navy-800/60 rounded-2xl p-8">
+            <div className="flex items-center gap-2 mb-8">
+              <BarChart3 size={18} className="text-navy-400" />
+              <h3 className="text-[14px] font-semibold text-white">Projeção de resultado</h3>
+            </div>
+
+            {/* Metric cards */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              {[
+                { label: "Leads estimados", value: plan.metrics.leads },
+                { label: "Base de empresas", value: plan.metrics.empresas },
+                { label: "Horas economizadas", value: plan.metrics.economia },
+                { label: "Captação", value: plan.metrics.clientes },
+              ].map((m) => (
+                <div key={m.label} className="bg-navy-800/40 rounded-xl p-4 border border-navy-700/30">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-navy-500 mb-1.5">{m.label}</p>
+                  <p className="text-[18px] font-semibold text-white font-display transition-all duration-300">{m.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Visual bars */}
+            <div className="space-y-4">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-navy-500 mb-2">Capacidade por módulo</p>
+              {[
+                { label: "Chatbot IA", pct: plan.bar[0] },
+                { label: "Prospecção B2B", pct: plan.bar[1] },
+                { label: "BPO + Website", pct: plan.bar[2] },
+              ].map((b) => (
+                <div key={b.label}>
+                  <div className="flex justify-between mb-1.5">
+                    <span className="text-[12px] text-navy-300">{b.label}</span>
+                    <span className={`text-[11px] font-medium ${b.pct > 0 ? "text-emerald-400" : "text-navy-600"}`}>
+                      {b.pct > 0 ? "Ativo" : "—"}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-navy-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700 ease-out"
+                      style={{
+                        width: `${b.pct}%`,
+                        background: b.pct > 0 ? "linear-gradient(90deg, #10b981, #34d399)" : "transparent",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </W>
+    </section>
+  );
+}
+
+
 /* ═══════════════════════════════════════════════════ */
 export default function Apresentacao() {
   const [scrolled, setScrolled] = useState(false);
@@ -92,7 +275,7 @@ export default function Apresentacao() {
       }`}>
         <W className="!max-w-[1400px]">
           <div className="h-16 flex items-center justify-between">
-            <span className="font-display text-lg font-semibold tracking-tight">Contabia</span>
+            <span className="font-display text-lg font-semibold tracking-tight">Fortes & Sartor</span>
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map(([h, l]) => (
                 <a key={h} href={h}
@@ -374,10 +557,10 @@ export default function Apresentacao() {
                   <span className="w-2.5 h-2.5 rounded-full bg-red-300/60" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-300/60" />
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-300/60" />
-                  <span className="ml-4 text-[10px] text-navy-300 font-mono">seuescritorio.com.br</span>
+                  <span className="ml-4 text-[10px] text-navy-300 font-mono">fortesesartor.com.br</span>
                 </div>
                 <div className="px-8 py-10 text-center">
-                  <p className="font-display text-[20px] font-medium text-navy-900">Seu Escritório Contábil</p>
+                  <p className="font-display text-[20px] font-medium text-navy-900">Fortes & Sartor</p>
                   <p className="text-[12px] text-navy-400 mt-3 max-w-[260px] mx-auto leading-relaxed">
                     Contabilidade, BPO Financeiro e consultoria para empresas que querem crescer.
                   </p>
@@ -400,60 +583,7 @@ export default function Apresentacao() {
 
 
       {/* ═══ PLANOS ═══ */}
-      <section id="planos" className="scroll-mt-20 py-28">
-        <W>
-          <div className="text-center mb-16">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-navy-400 mb-4">Níveis de implementação</p>
-            <h2 className="font-display text-[28px] md:text-[32px] font-medium tracking-tight">Escolha o escopo ideal</h2>
-            <p className="text-[15px] text-navy-400 mt-3 font-light">Cada módulo pode ser contratado separadamente ou em conjunto</p>
-          </div>
-
-          <div ref={refPlanos} className="grid grid-cols-1 lg:grid-cols-3 gap-6 reveal-children">
-            {[
-              { nome: "Essencial", sub: "Chatbot + Prospecção", dark: false, items: [
-                ["Chatbot IA no WhatsApp", true],["Widget de chat no site", true],["Prospecção B2B automatizada", true],
-                ["Pipeline de leads (CRM)", true],["Disparo automático de mensagens", true],
-                ["BPO Financeiro automatizado", false],["Conciliação bancária", false],["Website institucional", false],
-              ]},
-              { nome: "Completo", sub: "Chatbot + Prospecção + BPO", dark: true, items: [
-                ["Chatbot IA no WhatsApp", true],["Widget de chat no site", true],["Prospecção B2B automatizada", true],
-                ["Pipeline de leads (CRM)", true],["Disparo automático de mensagens", true],
-                ["BPO Financeiro automatizado", true],["Conciliação bancária (Open Finance)", true],["Website institucional", false],
-              ]},
-              { nome: "Premium", sub: "Solução completa + Website", dark: false, items: [
-                ["Chatbot IA no WhatsApp", true],["Widget de chat no site", true],["Prospecção B2B automatizada", true],
-                ["Pipeline de leads (CRM)", true],["Disparo automático de mensagens", true],
-                ["BPO Financeiro automatizado", true],["Conciliação bancária (Open Finance)", true],["Website institucional profissional", true],
-              ]},
-            ].map((p) => (
-              <div key={p.nome} className={`relative rounded-2xl p-8 border card-hover ${
-                p.dark ? "bg-navy-950 border-navy-800 shadow-xl shadow-navy-950/20" : "bg-white border-navy-100"
-              }`}>
-                {p.dark && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-navy-700 text-white text-[9px] font-semibold uppercase tracking-[0.18em] px-4 py-1 rounded-full whitespace-nowrap">
-                    Recomendado
-                  </span>
-                )}
-                <h3 className={`font-display text-[22px] font-medium ${p.dark ? "text-white" : "text-navy-900"}`}>{p.nome}</h3>
-                <p className="text-[12px] mt-1 mb-8 text-navy-400">{p.sub}</p>
-                <div className="space-y-3">
-                  {p.items.map(([text, on]) => (
-                    <div key={text as string} className={`flex items-center gap-3 ${on ? "" : "opacity-25"}`}>
-                      {on
-                        ? <Check size={15} className={`shrink-0 ${p.dark ? "text-emerald-400" : "text-navy-500"}`} />
-                        : <span className="w-[15px] shrink-0 flex justify-center"><span className={`block w-2.5 h-px ${p.dark ? "bg-navy-600" : "bg-navy-300"}`} /></span>
-                      }
-                      <span className={`text-[13px] ${p.dark ? (on ? "text-navy-200" : "text-navy-600") : (on ? "text-navy-600" : "text-navy-300")}`}>
-                        {text as string}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </W>
-      </section>
+      <PlanosSection refProp={refPlanos} />
 
 
       {/* ═══ CRONOGRAMA ═══ */}
@@ -513,7 +643,7 @@ export default function Apresentacao() {
 
       {/* ═══ FOOTER ═══ */}
       <footer className="py-14 border-t border-navy-100 text-center">
-        <p className="font-display text-[17px] font-medium text-navy-800">Contabia</p>
+        <p className="font-display text-[17px] font-medium text-navy-800">Fortes & Sartor</p>
         <p className="text-[12px] text-navy-300 mt-2">Proposta técnica — valores e prazos sob consulta</p>
       </footer>
 
