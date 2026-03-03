@@ -407,7 +407,6 @@ export default function Apresentacao() {
   const refBpoCards = useReveal<HTMLDivElement>(0.15);
   const refWebsite  = useReveal<HTMLDivElement>(0.12);
   const refPlanos   = useReveal<HTMLDivElement>(0.1);
-  const refCrono    = useReveal<HTMLDivElement>(0.12);
   const refDifs     = useReveal<HTMLDivElement>(0.15);
   const refInfra    = useReveal<HTMLDivElement>(0.12);
   const refLgpd     = useReveal<HTMLDivElement>(0.12);
@@ -1047,42 +1046,6 @@ export default function Apresentacao() {
           </div>
         </W>
       </section>
-
-      <Hr />
-
-
-      {/* ═══ CRONOGRAMA ═══ */}
-      <section className="bg-navy-50/50 py-28">
-        <W>
-          <div className="text-center mb-14">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-navy-400 mb-4">Implementação</p>
-            <h2 className="font-display text-[28px] md:text-[32px] font-medium tracking-tight">6 semanas até o lançamento</h2>
-            <p className="text-[15px] text-navy-400 mt-3 max-w-[460px] mx-auto font-light leading-relaxed">
-              Entregas semanais com validação a cada etapa. Operação completa no ar em abril.
-            </p>
-          </div>
-
-          <div ref={refCrono} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-children">
-            {[
-              { s: 1, t: "Infraestrutura", d: "Servidores, WhatsApp API Oficial, ambiente de desenvolvimento" },
-              { s: 2, t: "Prospecção", d: "Extração CNPJ, filtragem por perfil, montagem do CRM" },
-              { s: 3, t: "Chatbot IA", d: "Treinamento do agente, base de conhecimento, integração WhatsApp" },
-              { s: 4, t: "BPO Financeiro", d: "Automação OCR, categorização contábil, regras de aprovação" },
-              { s: 5, t: "Open Finance", d: "Integração bancária, conciliação automática, testes de estresse" },
-              { s: 6, t: "Lançamento", d: "Treinamento da equipe, contrato de manutenção, go-live" },
-            ].map((w) => (
-              <div key={w.s} className="flex gap-4 p-5 bg-white rounded-xl border border-navy-100 shadow-sm card-hover cursor-default text-left">
-                <span className="font-display text-[28px] font-medium text-navy-200 leading-none w-8 shrink-0">{w.s}</span>
-                <div>
-                  <p className="text-[14px] font-semibold text-navy-800">{w.t}</p>
-                  <p className="text-[12px] text-navy-400 mt-1 leading-relaxed">{w.d}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </W>
-      </section>
-
 
       {/* ═══ DIFERENCIAIS ═══ */}
       <section className="py-28">
