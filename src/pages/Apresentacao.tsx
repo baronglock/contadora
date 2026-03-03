@@ -965,15 +965,15 @@ export default function Apresentacao() {
           <SectionHead
             refProp={refFases}
             label="Metodologia"
-            title="Uma coisa de cada vez — testando antes de escalar"
-            desc="Abordagem Crawl-Walk-Run: cada módulo é implementado, testado e validado antes de avançar para o próximo. Sem surpresas."
+            title="Implementação progressiva — validando antes de escalar"
+            desc="Cada módulo é implementado, testado e aprovado antes de avançar para o próximo. Sem surpresas, sem riscos desnecessários."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 icon: Footprints,
-                fase: "Fase 1 — Engatinhar",
+                fase: "Fase 1 — Fundação",
                 titulo: "Chatbot + infraestrutura base",
                 semanas: "Semanas 1–3",
                 itens: [
@@ -986,7 +986,7 @@ export default function Apresentacao() {
               },
               {
                 icon: TestTube,
-                fase: "Fase 2 — Andar",
+                fase: "Fase 2 — Expansão",
                 titulo: "Prospecção B2B ativada",
                 semanas: "Semanas 3–4",
                 itens: [
@@ -999,7 +999,7 @@ export default function Apresentacao() {
               },
               {
                 icon: Rocket,
-                fase: "Fase 3 — Correr",
+                fase: "Fase 3 — Operação plena",
                 titulo: "BPO + Website + escala total",
                 semanas: "Semanas 4–6",
                 itens: [
