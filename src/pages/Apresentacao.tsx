@@ -3,7 +3,8 @@ import {
   MessageCircle, Target, Landmark, Globe, ShieldCheck, BookOpen,
   Database, Filter, Zap, ScanLine, FileSearch, BadgeCheck, ArrowRight,
   Receipt, Check, Clock, TrendingUp, ChevronRight, Users, ArrowDown,
-  Menu, X, BarChart3, Info,
+  Menu, X, BarChart3, Info, Server, DollarSign, Wrench, Lock, Eye,
+  Footprints, Rocket, TestTube, Code2,
 } from "lucide-react";
 
 /* ─── Intersection Observer hook ─── */
@@ -408,6 +409,9 @@ export default function Apresentacao() {
   const refPlanos   = useReveal<HTMLDivElement>(0.1);
   const refCrono    = useReveal<HTMLDivElement>(0.12);
   const refDifs     = useReveal<HTMLDivElement>(0.15);
+  const refInfra    = useReveal<HTMLDivElement>(0.12);
+  const refLgpd     = useReveal<HTMLDivElement>(0.12);
+  const refFases    = useReveal<HTMLDivElement>(0.12);
 
   const navLinks = [
     ["#chatbot", "Chatbot"],
@@ -415,6 +419,7 @@ export default function Apresentacao() {
     ["#bpo", "BPO Financeiro"],
     ["#website", "Website"],
     ["#planos", "Planos"],
+    ["#custos", "Custos"],
   ];
 
   return (
@@ -734,6 +739,318 @@ export default function Apresentacao() {
       <PlanosSection refProp={refPlanos} />
 
 
+      {/* ═══ CUSTOS DE INFRAESTRUTURA ═══ */}
+      <section id="custos" className="scroll-mt-20 py-28">
+        <W>
+          <SectionHead
+            refProp={refInfra}
+            label="Investimento operacional"
+            title="Quanto custa manter tudo rodando"
+            desc="Custos mensais reais da infraestrutura — e por que são uma fração do que custaria fazer o mesmo com pessoas."
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left: infra costs */}
+            <div className="space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-navy-400 mb-2">Infraestrutura mensal</p>
+              {[
+                { icon: Server, t: "Servidores Cloud (VPS + banco de dados)", v: "R$ 150 – R$ 350", note: "Hospeda o n8n, scripts Python, banco relacional" },
+                { icon: MessageCircle, t: "WhatsApp Business API (Meta)", v: "R$ 200 – R$ 500", note: "Varia com volume de disparos ativos de prospecção" },
+                { icon: Zap, t: "Tokens de IA (OpenAI + Google)", v: "R$ 50 – R$ 250", note: "GPT-4o Mini para OCR, Gemini Flash para triagem" },
+                { icon: Database, t: "APIs de dados (CNPJ / Receita Federal)", v: "R$ 0 – R$ 100", note: "APIs gratuitas cobrem a operação inicial" },
+              ].map((item) => (
+                <div key={item.t} className="flex items-start gap-4 p-4 rounded-xl bg-navy-50/60 border border-navy-100 group cursor-default card-hover">
+                  <div className="w-9 h-9 rounded-lg bg-white border border-navy-100 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-navy-900 group-hover:border-navy-800">
+                    <item.icon size={16} className="text-navy-400 transition-colors duration-300 group-hover:text-white" strokeWidth={1.6} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[13px] font-semibold text-navy-800">{item.t}</p>
+                      <span className="text-[13px] font-semibold text-navy-600 shrink-0">{item.v}</span>
+                    </div>
+                    <p className="text-[11px] text-navy-400 mt-0.5">{item.note}</p>
+                  </div>
+                </div>
+              ))}
+
+              <div className="p-4 rounded-xl bg-navy-900 text-white">
+                <div className="flex items-center justify-between">
+                  <p className="text-[13px] font-semibold">Total estimado mensal</p>
+                  <p className="text-[15px] font-semibold font-display">R$ 400 – R$ 1.200</p>
+                </div>
+                <p className="text-[11px] text-navy-300 mt-1">Opera 24 horas, 7 dias, 365 dias. Sem férias, sem 13º, sem FGTS.</p>
+              </div>
+
+              {/* WhatsApp API detail */}
+              <div className="p-5 rounded-xl bg-emerald-50 border border-emerald-100">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-700 mb-3 flex items-center gap-1.5">
+                  <MessageCircle size={12} /> Detalhamento — WhatsApp API Oficial
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Check size={13} className="text-emerald-600 mt-0.5 shrink-0" />
+                    <p className="text-[12px] text-emerald-900 leading-relaxed">
+                      <strong>Receptivo (cliente inicia) — GRATUITO.</strong> Toda conversa que o cliente começa (link no site, mensagem direta) não tem custo nenhum.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <DollarSign size={13} className="text-amber-600 mt-0.5 shrink-0" />
+                    <p className="text-[12px] text-emerald-900 leading-relaxed">
+                      <strong>Ativo — Marketing (prospecção):</strong> ~US$ 0,06–0,07 por conversa (~R$ 0,35). Usado para abordar leads novos da base da Receita Federal.
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <DollarSign size={13} className="text-amber-600 mt-0.5 shrink-0" />
+                    <p className="text-[12px] text-emerald-900 leading-relaxed">
+                      <strong>Ativo — Utilidade (lembrete de guia):</strong> ~US$ 0,007 por disparo (~R$ 0,04). Quase irrelevante no custo.
+                    </p>
+                  </div>
+                </div>
+                <p className="text-[11px] text-emerald-700 mt-3 leading-relaxed">
+                  Na prática: se o chatbot operar apenas receptivamente (site + indicações), o custo de WhatsApp é zero. A prospecção ativa é o que gera custo variável — quanto mais qualificada a base antes do disparo, menor o desperdício.
+                </p>
+              </div>
+            </div>
+
+            {/* Right: comparison with employees */}
+            <div className="space-y-6">
+              <div className="p-8 rounded-2xl bg-red-50/60 border border-red-100">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-red-400 mb-5">Alternativa tradicional</p>
+                <p className="font-display text-[24px] font-medium text-red-900 leading-snug">
+                  2 funcionários CLT<br />fazendo o mesmo trabalho
+                </p>
+                <div className="mt-6 space-y-3">
+                  {[
+                    { t: "Salário bruto (2×)", v: "~R$ 6.000 – R$ 8.000" },
+                    { t: "FGTS + INSS patronal", v: "~R$ 2.000 – R$ 2.800" },
+                    { t: "13º + férias (mensal provisionado)", v: "~R$ 1.000 – R$ 1.400" },
+                    { t: "VT + VR + benefícios", v: "~R$ 1.200 – R$ 1.800" },
+                  ].map((c) => (
+                    <div key={c.t} className="flex justify-between items-center text-[13px]">
+                      <span className="text-red-800">{c.t}</span>
+                      <span className="font-semibold text-red-900">{c.v}</span>
+                    </div>
+                  ))}
+                  <div className="h-px bg-red-200 my-2" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-[14px] font-semibold text-red-900">Total mensal estimado</span>
+                    <span className="text-[18px] font-semibold font-display text-red-900">~R$ 10.200 – R$ 14.000</span>
+                  </div>
+                </div>
+                <div className="mt-6 space-y-1.5">
+                  {[
+                    "Trabalham seg–sex, horário comercial",
+                    "Ficam doentes, tiram férias, pedem demissão",
+                    "Erram na digitação, esquecem lançamentos",
+                    "Não atendem madrugada, feriado ou fim de semana",
+                  ].map((l) => (
+                    <p key={l} className="text-[11px] text-red-600 flex items-center gap-2">
+                      <X size={11} className="shrink-0" /> {l}
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tech stack */}
+              <div className="p-6 rounded-xl bg-navy-50/60 border border-navy-100">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-navy-400 mb-4 flex items-center gap-1.5">
+                  <Code2 size={12} /> Stack tecnológico
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {["n8n", "Python", "GPT-4o Mini", "Gemini Flash", "WhatsApp API Oficial", "Open Finance", "PostgreSQL", "RAG"].map((t) => (
+                    <span key={t} className="px-3 py-1.5 rounded-lg bg-white text-[11px] text-navy-600 border border-navy-100 font-medium">{t}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Maintenance plan */}
+              <div className="p-6 rounded-xl bg-navy-900 text-white">
+                <div className="flex items-center gap-2 mb-4">
+                  <Wrench size={16} className="text-navy-300" />
+                  <p className="text-[13px] font-semibold">Plano de manutenção mensal</p>
+                </div>
+                <p className="text-[12px] text-navy-300 leading-relaxed mb-4">
+                  APIs mudam, modelos de IA são atualizados, tokens expiram. Um contrato de suporte contínuo garante que tudo continue funcionando sem interrupção.
+                </p>
+                <div className="space-y-2">
+                  {[
+                    "Atualização de APIs (Meta, OpenAI, bancos)",
+                    "Monitoramento de servidores e alertas",
+                    "Ajustes de prompt e calibragem da IA",
+                    "Renovação de tokens do Open Finance",
+                    "Implementação de melhorias incrementais",
+                    "Correção proativa de vulnerabilidades",
+                  ].map((s) => (
+                    <div key={s} className="flex items-center gap-2">
+                      <Check size={12} className="text-emerald-400 shrink-0" />
+                      <span className="text-[12px] text-navy-200">{s}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-navy-400 mt-4 leading-relaxed">
+                  Essencial para garantir disponibilidade, segurança e evolução contínua da plataforma.
+                </p>
+              </div>
+            </div>
+          </div>
+        </W>
+      </section>
+
+      <Hr />
+
+
+      {/* ═══ LGPD ═══ */}
+      <section className="py-28 bg-navy-50/50">
+        <W>
+          <div ref={refLgpd} className="reveal">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 items-start">
+              {/* Left: explanation */}
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-navy-400 mb-4">
+                  Conformidade legal
+                </p>
+                <h2 className="font-display text-[28px] md:text-[32px] font-medium tracking-tight leading-snug">
+                  LGPD integrada desde o primeiro dia
+                </h2>
+                <p className="text-[15px] text-navy-400 mt-4 leading-relaxed font-light">
+                  Toda a arquitetura foi desenhada em conformidade com a Lei Geral de Proteção de Dados.
+                  Não é uma camada extra — é parte da fundação do sistema.
+                </p>
+              </div>
+
+              {/* Right: cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  {
+                    icon: Lock,
+                    t: "Dados da Receita Federal",
+                    d: "CPFs do Quadro de Sócios são automaticamente mascarados (3 primeiros dígitos + verificadores ocultos). Nunca são armazenados completos.",
+                  },
+                  {
+                    icon: ShieldCheck,
+                    t: "WhatsApp API Oficial",
+                    d: "A API Oficial da Meta já opera em conformidade com LGPD. Templates de mensagem passam por aprovação prévia — sem spam, sem risco de bloqueio.",
+                  },
+                  {
+                    icon: Eye,
+                    t: "Consentimento e transparência",
+                    d: "Mensagens ativas seguem o padrão opt-out. O destinatário pode encerrar a conversa a qualquer momento e seus dados são removidos da base.",
+                  },
+                  {
+                    icon: Database,
+                    t: "Dados financeiros (BPO)",
+                    d: "Documentos processados pelo OCR ficam em servidores isolados com acesso restrito. Logs são auditáveis e dados sensíveis são criptografados.",
+                  },
+                ].map((item) => (
+                  <div key={item.t} className="p-5 rounded-xl bg-white border border-navy-100 shadow-sm card-hover cursor-default group">
+                    <div className="w-9 h-9 rounded-lg bg-navy-50 border border-navy-100 flex items-center justify-center mb-3 transition-all duration-300 group-hover:bg-navy-900 group-hover:border-navy-800">
+                      <item.icon size={16} className="text-navy-400 transition-colors duration-300 group-hover:text-white" strokeWidth={1.6} />
+                    </div>
+                    <p className="text-[13px] font-semibold text-navy-800">{item.t}</p>
+                    <p className="text-[12px] text-navy-400 mt-1.5 leading-relaxed">{item.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </W>
+      </section>
+
+      <Hr />
+
+
+      {/* ═══ CRAWL-WALK-RUN (Implementação por fases) ═══ */}
+      <section className="py-28">
+        <W>
+          <SectionHead
+            refProp={refFases}
+            label="Metodologia"
+            title="Uma coisa de cada vez — testando antes de escalar"
+            desc="Abordagem Crawl-Walk-Run: cada módulo é implementado, testado e validado antes de avançar para o próximo. Sem surpresas."
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Footprints,
+                fase: "Fase 1 — Engatinhar",
+                titulo: "Chatbot + infraestrutura base",
+                semanas: "Semanas 1–3",
+                itens: [
+                  "Configuração de servidores e WhatsApp API Oficial",
+                  "Treinamento do chatbot com base de conhecimento (RAG)",
+                  "Testes internos com a equipe do escritório",
+                  "Chatbot atendendo clientes existentes (receptivo)",
+                ],
+                resultado: "Validação: o chatbot responde corretamente e agenda reuniões sem intervenção humana.",
+              },
+              {
+                icon: TestTube,
+                fase: "Fase 2 — Andar",
+                titulo: "Prospecção B2B ativada",
+                semanas: "Semanas 3–4",
+                itens: [
+                  "Extração e filtragem da base da Receita Federal",
+                  "Primeiras campanhas de prospecção ativa (lote pequeno)",
+                  "Montagem do CRM com pipeline de leads",
+                  "Acompanhamento de métricas: taxa de resposta e agendamento",
+                ],
+                resultado: "Validação: leads qualificados chegam via WhatsApp e convertem em reuniões reais.",
+              },
+              {
+                icon: Rocket,
+                fase: "Fase 3 — Correr",
+                titulo: "BPO + Website + escala total",
+                semanas: "Semanas 4–6",
+                itens: [
+                  "Automação BPO Financeiro (OCR + categorização + conciliação)",
+                  "Integração Open Finance para conciliação bancária",
+                  "Website institucional com chat integrado no ar",
+                  "Treinamento final da equipe e assinatura do SLA",
+                ],
+                resultado: "Validação: operação completa rodando. Go-live em abril.",
+              },
+            ].map((fase, idx) => (
+              <div key={fase.fase} className="relative p-8 rounded-2xl bg-navy-50/60 border border-navy-100 card-hover cursor-default group">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-11 h-11 rounded-xl bg-white border border-navy-100 flex items-center justify-center transition-all duration-300 group-hover:bg-navy-900 group-hover:border-navy-800">
+                    <fase.icon size={20} className="text-navy-500 transition-colors duration-300 group-hover:text-white" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-navy-300">{fase.fase}</p>
+                    <p className="text-[14px] font-semibold text-navy-800">{fase.titulo}</p>
+                  </div>
+                </div>
+
+                <p className="text-[11px] font-medium text-navy-400 mb-4">{fase.semanas}</p>
+
+                <div className="space-y-2 mb-6">
+                  {fase.itens.map((item) => (
+                    <div key={item} className="flex items-start gap-2">
+                      <Check size={12} className="text-navy-400 mt-0.5 shrink-0" />
+                      <span className="text-[12px] text-navy-600 leading-relaxed">{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-100">
+                  <p className="text-[11px] text-emerald-700 leading-relaxed">
+                    <strong>Critério de avanço:</strong> {fase.resultado}
+                  </p>
+                </div>
+
+                {idx < 2 && (
+                  <ArrowRight size={18} className="absolute top-1/2 -right-4 text-navy-200 hidden md:block" />
+                )}
+              </div>
+            ))}
+          </div>
+        </W>
+      </section>
+
+      <Hr />
+
+
       {/* ═══ CRONOGRAMA ═══ */}
       <section className="bg-navy-50/50 py-28">
         <W>
@@ -772,7 +1089,7 @@ export default function Apresentacao() {
         <W>
           <div ref={refDifs} className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center reveal-children">
             {[
-              { icon: ShieldCheck, t: "Segurança total", d: "API Oficial do WhatsApp com selo verde. Conformidade LGPD. Sem risco de bloqueio." },
+              { icon: ShieldCheck, t: "Segurança total", d: "API Oficial do WhatsApp com selo verde. Arquitetura 100% LGPD desde a fundação. Sem risco de bloqueio." },
               { icon: TrendingUp, t: "Retorno rápido", d: "Com 2 clientes de BPO o investimento se paga e já gera lucro recorrente." },
               { icon: Clock, t: "Economia real", d: "Automação equivalente a 2 funcionários em tempo integral dedicado." },
             ].map((d) => (
